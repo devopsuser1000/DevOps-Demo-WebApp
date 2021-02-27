@@ -12,7 +12,7 @@ pipeline {
         stage('BuildProject') {
             steps {
                 slackSend channel: 'alerts', message: 'Building project...'
-                sh: "mvn clean install"
+                sh 'mvn clean install'
             }
         }
         stage('DeployToTest') {
