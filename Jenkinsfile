@@ -5,7 +5,7 @@ pipeline {
             steps {
                 slackSend channel: 'alerts', message: 'Discovery phase pipeline test'
                 slackSend channel: 'alerts', message: 'Project checkout from Git'
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/devopsuser1000/DevOps-Demo-WebApp.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '9ffeb8a2-a990-457e-a0c9-db7cdfca4f34', url: 'https://github.com/devopsuser1000/DevOps-Demo-WebApp.git']]])
                 slackSend channel: 'alerts', message: 'Git checkout complete'
             }
         }
