@@ -41,41 +41,26 @@ pipeline {
         }
         stage('DeployToNewTest') {
             steps {
-                slackSend channel: 'alerts', message: 'Deploy the Application to the Test environment'
-               // sshagent(['deploy_user']) {
-               //     sh "scp -o StrictHostKeyChecking=no target/AVNCommunication-1.0.war ubuntu@ec2-18.218.198.155:/var/lib/tomcat8/webapps/QAWebapp.war"
-               //     sh "scp -o StrictHostKeyChecking=no -r target/AVNCommunication-1.0 ubuntu@ec2-18.218.198.155:/var/lib/tomcat8/webapps/QAWebapp"
-               // }               
+               slackSend channel: 'alerts', message: 'Deploy the Application to the Test environment'             
                deploy adapters: [tomcat8(url: 'http://35.226.4.247:8080/', credentialsId: 'tomcat', path: '' )], contextPath: '/QAWebapp', war: '**/*.war'
             
         }
        }
        
        
-       stage('Artifactory') {
-            steps {
-                slackSend channel: 'alerts', message: 'Archiving the artifacts..'
-                script{
-                    // Get the Artifactory server instance details. Defined in the Artifactory Plugin administration page.
-                    def server = Artifactory.server "artifactory"
-                    // Artifactory Maven instance
-                    def rtMaven = Artifactory.newMavenBuild()
-                    def buildInfo = Artifactory.newBuildInfo()
-                
-                        // Tool name from Jenkins configuration
-                        rtMaven.tool = "maven"
-                        // Artifactory repositories for dependencies resolution and artifacts deployment
-                        rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
-                        rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
-                        rtMaven.deployer.deployArtifacts = false
-                    
-                
-                        buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -e -Dmaven.repo.local=.m2', buildInfo: buildInfo
-                
-                        server.publishBuildInfo buildInfo
-                }
-            }
-        } 
+       stage('Deploy Artifacts'){
+			 steps{	
+			 slackSend channel: 'alerts', message: 'Store artifatcs to Artifactory' 
+				 rtPublishBuildInfo(
+				id: 'artifactory',
+   				 url: 'https://devops1000.jfrog.io/artifactory',
+    
+    				credentialsId: 'deploy',
+    				bypassProxy: true, 				
+    				timeout: 300  					
+					 )
+			}
+		 }
        
        
        stage('UI Test') {
