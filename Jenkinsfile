@@ -15,7 +15,7 @@ pipeline {
             }
         }
         
-        /*stage('SonarqubeScanner') {
+        stage('SonarqubeScanner') {
             environment {
                 scannerHome = tool 'sonarqube'
             }
@@ -29,7 +29,7 @@ pipeline {
                 //}
                 slackSend channel: 'alerts', message: 'Static code analysis is complete'
                 }
-        }    */
+        }
         
         stage('BuildProject') {
             steps {
