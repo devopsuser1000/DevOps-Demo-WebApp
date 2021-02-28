@@ -1,7 +1,7 @@
 pipeline {
     agent any
     
-    rtMaven.tool = "maven"
+ 
     
     stages {
         stage('CodeCheckout') {
@@ -31,8 +31,8 @@ pipeline {
         stage('BuildProject') {
             steps {
                 slackSend channel: 'alerts', message: 'Building project...'
-                buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
-                //sh 'mvn compile'
+       
+                sh 'mvn compile'
             }
         }
         stage('DeployToTest') {
