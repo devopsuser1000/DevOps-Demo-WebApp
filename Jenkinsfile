@@ -89,7 +89,6 @@ pipeline {
             	slackSend channel: 'alerts', message: 'UI Tests Complete!'
             }
        }
-    }
     
     stage('Performance Test'){
         steps{
@@ -125,7 +124,5 @@ pipeline {
           slackSend channel: 'alerts', message: 'Sanity Test Complete!'
         }
       } 
-    
-    
-    
+   }   
 }
