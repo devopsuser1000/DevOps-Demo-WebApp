@@ -11,7 +11,7 @@ pipeline {
         }
         stage('SonarqubeScanner') {
             environment {
-                scannerHome = tool 'sonarqubescanner'
+                scannerHome = tool 'sonarqube'
             }
             steps {
                 slackSend channel: 'alerts', message: 'Static code analysis is in progress'
