@@ -14,7 +14,7 @@ pipeline {
                 slackSend channel: 'alerts', message: 'Git checkout complete'
             }
         }
-        
+      /*  
         stage('SonarqubeScanner') {
             environment {
                 scannerHome = tool 'sonarqube'
@@ -29,7 +29,7 @@ pipeline {
                 //}
                 slackSend channel: 'alerts', message: 'Static code analysis is complete'
                 }
-        }
+        } */
         
         stage('BuildProject') {
             steps {
@@ -48,19 +48,36 @@ pipeline {
        }
        
        
-       stage('Deploy Artifacts'){
-			 steps{	
-			 slackSend channel: 'alerts', message: 'Store artifatcs to Artifactory' 
-				 rtPublishBuildInfo(
-				id: 'artifactory',
-   				 url: 'https://devops1000.jfrog.io/artifactory',
-    
-    				credentialsId: 'deploy',
-    				bypassProxy: true, 				
-    				timeout: 300  					
-					 )
+       stage('Deploy Artifacts') {
+                 steps{
+			 
+			rtMavenRun ( 
+				tool: 'Maven3.6.3',
+				pom: 'pom.xml', 
+				goals: 'clean install'
+			)
+				rtServer (
+                    			id: 'ARTIFACTORY_SERVER',
+                    			url: 'https://devops1000.jfrog.io/artifactory',
+                    			credentialsId: 'deploy'
+                			)
+                	rtMavenDeployer (
+                    			id: 'MAVEN_DEPLOYER',
+                    			serverId: 'artifactory',
+                    			releaseRepo: 'libs-release-local',
+                    			snapshotRepo: 'libs-snapshot-local'
+                			)
+                	rtMavenResolver (
+                    			id: 'MAVEN_RESOLVER',
+                    			serverId: 'artifactory',
+                    			releaseRepo: 'libs-release-local',
+                    			snapshotRepo: 'libs-snapshot-local'
+                		)
+			 rtPublishBuildInfo (
+				 serverId: 'artifactory'
+			 )			 	
 			}
-		 }
+		}
        
        
        stage('UI Test') {
