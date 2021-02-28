@@ -18,9 +18,9 @@ pipeline {
                 withSonarQubeEnv('sonarqube') {
                     sh """${scannerHome}/bin/sonar-scanner"""
                 }
-                timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
+               // timeout(time: 2, unit: 'MINUTES') {
+               //     waitForQualityGate abortPipeline: true
+                //}
                 slackSend channel: 'alerts', message: 'Static code analysis is complete'
                 }
         }    
