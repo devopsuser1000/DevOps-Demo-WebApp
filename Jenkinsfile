@@ -38,14 +38,14 @@ pipeline {
                 sh 'mvn -Dmaven.test.failure.ignore=true clean package'
             }
         }
-        stage('DeployToTest') {
+        stage('DeployToNewTest') {
             steps {
                 slackSend channel: 'alerts', message: 'Deploy the Application to the Test environment'
                // sshagent(['deploy_user']) {
                //     sh "scp -o StrictHostKeyChecking=no target/AVNCommunication-1.0.war ubuntu@ec2-18.218.198.155:/var/lib/tomcat8/webapps/QAWebapp.war"
                //     sh "scp -o StrictHostKeyChecking=no -r target/AVNCommunication-1.0 ubuntu@ec2-18.218.198.155:/var/lib/tomcat8/webapps/QAWebapp"
                // }               
-               deploy adapters: [tomcat8(url: 'http://18.218.198.155:8080/', credentialsId: 'tomcat', path: '' )], contextPath: '/QAWebapp', war: '**/*.war'
+               deploy adapters: [tomcat8(url: 'http://18.191.98.67:8080/', credentialsId: 'tomcat', path: '' )], contextPath: '/QAWebapp', war: '**/*.war'
             
         }
        }
