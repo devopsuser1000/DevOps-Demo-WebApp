@@ -79,8 +79,7 @@ pipeline {
 			 slackSend channel: 'alerts', message: 'Deploying Artifacts Complete!'	 	
 			}
 		}
-       
-       
+           
        stage('UI Test') {
             steps {
                 slackSend channel: 'alerts', message: 'Starting UI Tests...'
