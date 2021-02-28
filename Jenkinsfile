@@ -9,6 +9,22 @@ pipeline {
                 slackSend channel: 'alerts', message: 'Git checkout complete'
             }
         }
+        stage('SonarqubeScanner') {
+            environment {
+                scannerHome = tool 'sonarqubescanner'
+            }
+            steps {
+                slackSend channel: 'alerts', message: 'Static code analysis is in progress'
+                withSonarQubeEnv('sonarqube') {
+                    sh """${scannerHome}/bin/sonar-scanner"""
+                }
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+                slackSend channel: 'alerts', message: 'Static code analysis is complete'
+                }
+        }    
+        
         stage('BuildProject') {
             steps {
                 slackSend channel: 'alerts', message: 'Building project...'
