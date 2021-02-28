@@ -50,6 +50,34 @@ pipeline {
             
         }
        }
+       
+       
+       stage('Artifactory') {
+            steps {
+                slackSend channel: 'alerts', message: 'Archiving the artifacts..'
+                script{
+                    // Get the Artifactory server instance details. Defined in the Artifactory Plugin administration page.
+                    def server = Artifactory.server "artifactory"
+                    // Artifactory Maven instance
+                    def rtMaven = Artifactory.newMavenBuild()
+                    def buildInfo = Artifactory.newBuildInfo()
+                
+                        // Tool name from Jenkins configuration
+                        rtMaven.tool = "maven"
+                        // Artifactory repositories for dependencies resolution and artifacts deployment
+                        rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
+                        rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
+                        rtMaven.deployer.deployArtifacts = false
+                    
+                
+                        buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -e -Dmaven.repo.local=.m2', buildInfo: buildInfo
+                
+                        server.publishBuildInfo buildInfo
+                }
+            }
+        } 
+       
+       
        stage('UI Test') {
             steps {
                 slackSend channel: 'alerts', message: 'Starting UI Tests...'
