@@ -35,8 +35,8 @@ pipeline {
             steps {
                 slackSend channel: 'alerts', message: 'Deploy the Application to the Test environment'
                 sshagent(['deploy_user']) {
-                    sh "scp -o StrictHostKeyChecking=no target/AVNCommunication-1.0.war ubuntu@ec2-3-17-207-180:/var/lib/tomcat8/webapps/QAWebapp.war"
-                    sh "scp -o StrictHostKeyChecking=no -r target/AVNCommunication-1.0 ubuntu@ec2-3-17-207-180:/var/lib/tomcat8/webapps/QAWebapp"
+                    sh "scp -o StrictHostKeyChecking=no target/AVNCommunication-1.0.war ubuntu@ec2-18.218.198.155:/var/lib/tomcat8/webapps/QAWebapp.war"
+                    sh "scp -o StrictHostKeyChecking=no -r target/AVNCommunication-1.0 ubuntu@ec2-18.218.198.155:/var/lib/tomcat8/webapps/QAWebapp"
             }
         }
        }
