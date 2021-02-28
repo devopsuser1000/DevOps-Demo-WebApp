@@ -34,7 +34,8 @@ pipeline {
             steps {
                 slackSend channel: 'alerts', message: 'Building project...'
        
-                sh 'mvn compile'
+                //sh 'mvn compile'
+                sh 'mvn -Dmaven.test.failure.ignore=true clean package'
             }
         }
         stage('DeployToTest') {
