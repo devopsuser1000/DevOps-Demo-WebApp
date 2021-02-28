@@ -99,7 +99,6 @@ pipeline {
         }
       */
 
-
     stage ('Deploy To Prod') {
         steps {
         	slackSend channel: 'alerts', message: 'Starting deployment to Production...'
